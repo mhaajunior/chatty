@@ -1,0 +1,43 @@
+stages:
+  - build
+  # - deploy
+
+variables:
+  DOCKER_IMAGE: thithut/custom-errors # เปลี่ยนเป็นชื่อผู้ใช้และชื่อภาพของคุณ
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+
+build_image:
+  stage: build
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  script:
+    - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" # ใช้ username และ password จาก variables ของ GitLab CI
+    - docker-compose build # สร้าง Docker images สำหรับทุก services ใน docker-compose.yml
+    - docker images
+    - docker tag custom-errors_api1 $DOCKER_IMAGE-api1 # แท็กภาพ api1
+    - docker tag custom-errors_api2 $DOCKER_IMAGE-api2 # แท็กภาพ api2
+    - docker tag custom-errors_api3 $DOCKER_IMAGE-api3 # แท็กภาพ api3
+    - docker push $DOCKER_IMAGE-api1 # อัปโหลดภาพ api1 ไปยัง Docker Hub
+    - docker push $DOCKER_IMAGE-api2 # อัปโหลดภาพ api2 ไปยัง Docker Hub
+    - docker push $DOCKER_IMAGE-api3 # อัปโหลดภาพ api3 ไปยัง Docker Hub
+  only:
+    - main
+# deploy:
+#   stage: deploy
+#   image: docker:20.10.16
+#   services:
+#     - docker:20.10.16-dind
+#   script:
+#     - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" # ล็อกอินเข้าสู่ Docker Hub
+#     - docker-compose pull # ดึงภาพจาก Docker Hub
+#     - docker-compose down # หยุดบริการเดิม
+#     - docker-compose up -d --build # เริ่มบริการใหม่ด้วยภาพใหม่
+#     - docker-compose ps # แสดงสถานะของบริการ
+#     # - docker-compose logs -f # แสดง log ของบริการ
+#   only:
+#     - main
+#   environment:
+#     name: production
+#   when: manual # กด deploy ได้เองใน GitLab

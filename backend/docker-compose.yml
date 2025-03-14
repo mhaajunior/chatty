@@ -1,0 +1,65 @@
+services:
+  api1:
+    build: .
+    container_name: custom_errors_api1
+    ports:
+      - "4001:3000" # เชื่อมต่อ port 3000 บนโฮสต์กับ container
+    volumes:
+      - /var/log/custom_errors:/usr/src/app/logs # Mount logs folder to host
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - INSTANCE_NAME=api1
+      - SECRET=${SECRET}
+    networks:
+      - custom_errors_network
+
+  api2:
+    build: .
+    container_name: custom_errors_api2
+    ports:
+      - "4002:3000" # เชื่อมต่อ port 3000 บนโฮสต์กับ container
+    volumes:
+      - /var/log/custom_errors:/usr/src/app/logs # Mount logs folder to host
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - INSTANCE_NAME=api2
+      - SECRET=${SECRET}
+    networks:
+      - custom_errors_network
+
+  api3:
+    build: .
+    container_name: custom_errors_api3
+    ports:
+      - "4003:3000" # เชื่อมต่อ port 3000 บนโฮสต์กับ container
+    volumes:
+      - /var/log/custom_errors:/usr/src/app/logs # Mount logs folder to host
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - INSTANCE_NAME=api3
+      - SECRET=${SECRET}
+    networks:
+      - custom_errors_network
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_api
+    ports:
+      - "4000:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    restart: always
+    depends_on:
+      - api3
+    networks:
+      - custom_errors_network
+
+networks:
+  custom_errors_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.100.0/24 # กำหนดค่า subnet เองเพื่อหลีกเลี่ยงปัญหา IP address pool หมด

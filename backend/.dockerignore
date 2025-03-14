@@ -1,0 +1,40 @@
+# Ignore node_modules folder (installed inside Docker container)
+
+node_modules
+
+# Ignore logs folder
+
+logs
+
+# Ignore test-related files and coverage reports
+
+tests
+coverage
+
+# Ignore environment configuration files (development only)
+
+.env.local
+.env.test
+.env.\*.local
+
+# Ignore Docker-specific files
+
+Dockerfile
+.dockerignore
+
+# Ignore Git repository files
+
+.git
+.gitignore
+
+# Ignore editor-specific files (e.g., for VSCode)
+
+.vscode/
+.idea/
+\*.swp
+
+# Ignore build artifacts
+
+dist
+build
+tmp

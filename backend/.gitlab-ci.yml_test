@@ -1,0 +1,42 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+
+build_image:
+  stage: build
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - docker-compose build
+  only:
+    - main
+
+deploy:
+  stage: deploy
+  image: ubuntu:20.04
+  before_script:
+    - apt-get update && apt-get install -y openssh-client git
+    - cat "$SSH_KEY" | tr -d '\r' > id_rsa # Remove any carriage returns
+    - chmod 400 id_rsa
+    - eval $(ssh-agent -s)
+    - ssh-add id_rsa
+  script:
+    - ssh -v -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
+      cd /opt/docker/custom-errors &&
+      git pull origin main &&
+      docker-compose down &&
+      docker-compose up -d --build &&
+      docker-compose ps &&
+      docker-compose logs -f"
+  only:
+    - main
+  environment:
+    name: production
+  when: manual # กด deploy ได้เองใน GitLab

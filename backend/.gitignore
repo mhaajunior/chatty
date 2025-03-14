@@ -1,0 +1,31 @@
+# Node.js dependencies
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Typescript output
+dist/
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.*.local
+
+# Docker
+docker-compose.override.yml
+.docker/
+docker-sync/
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# IDE / Editor settings
+.vscode/
+.idea/
+*.swp
+
+# Git specific
