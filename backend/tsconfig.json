@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "target": "es6",
+    "module": "commonjs",
     "typeRoots": ["./src/types", "./node_modules/@types"],
     "strict": true,
     "esModuleInterop": true,
@@ -14,7 +13,7 @@
   "exclude": ["node_modules"],
   "ts-node": {
     "compilerOptions": {
-      "module": "NodeNext"
+      "module": "commonjs"
     },
     "files": true,
     "require": ["tsconfig-paths/register"]
