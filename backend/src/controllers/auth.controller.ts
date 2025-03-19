@@ -87,6 +87,7 @@ export const login = async (
         email: user.email,
         fullName: user.fullName,
         profilePic: user.profilePic,
+        createdAt: user.createdAt,
       },
     });
   } catch (error) {
