@@ -15,7 +15,7 @@ import { app, server } from "./lib/socket";
 dotenv.config();
 
 const port = process.env.PORT || 3000;
-const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use(express.json({ limit: "50mb" }));
 app.use(helmet());
